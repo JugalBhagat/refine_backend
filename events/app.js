@@ -52,7 +52,7 @@ app.post("/addevent", upload.none(), async (req, res) => {
 });
 
 app.get("/fetchallevents", async (req, res) => {
-    const query = "SELECT * FROM tbl_events";
+    const query = "SELECT tbl_events.eid, tbl_events.event_title, tbl_users.username, tbl_events.date, tbl_events.start_time, tbl_events.end_time FROM tbl_events INNER JOIN tbl_users ON tbl_events.uid = tbl_users.user_id";
     
     try {
         connection.query(query, (err, results) => {
@@ -64,6 +64,7 @@ app.get("/fetchallevents", async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 });
+
 
 app.put("/updateevent", upload.none(), async (req, res) => {
     const { eid, event_title, uid, date, start_time, end_time } = req.body;

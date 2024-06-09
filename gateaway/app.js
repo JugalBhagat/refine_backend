@@ -78,12 +78,11 @@ app.get("/fetchcountry", async (req, res) => {
 });
 
 app.get("/fetchcompany", async (req, res) => {
-    const query = "SELECT cid,cname FROM tbl_company";
+    const query = "SELECT cid, cname FROM tbl_company";
     try {
         connection.query(query, (err, results) => {
             if (err) throw err;
-            const company = results.map(row => row.cid);
-            res.status(200).json({ message: "Fetched All Company", "companies": company });
+            res.status(200).json({ message: "Fetched All Companies", companies: results });
         });
     } catch (err) {
         console.error("Error executing MySQL query:", err);

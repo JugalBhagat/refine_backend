@@ -36,11 +36,11 @@ app.post("/addnote", upload.none(), async (req, res) => {
     }
 
     const query = "INSERT INTO tbl_notes (note_title, note_desc, uid, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())";
-     
+
     try {
         connection.query(query, [title, desc, uid], (err, results) => {
             if (err) throw err;
-            res.status(200).json({ 
+            res.status(200).json({
                 message: "Note added successfully",
                 noteId: results.insertId
             });
@@ -52,12 +52,25 @@ app.post("/addnote", upload.none(), async (req, res) => {
 });
 
 app.get("/fetchall", async (req, res) => {
-    const query = "SELECT * FROM tbl_notes";
-    
+    const query = `
+        SELECT
+            n.nid,
+            n.note_title,
+            n.note_desc,
+            n.created_at,
+            u.username AS created_by
+            FROM
+            tbl_notes AS n
+            INNER JOIN
+            tbl_users AS u
+            ON
+            n.uid = u.user_id
+    `;
+
     try {
         connection.query(query, (err, results) => {
             if (err) throw err;
-            res.status(200).json({message:"Fetched All Notes",data:results});
+            res.status(200).json({ message: "Fetched All Notes", data: results });
         });
     } catch (err) {
         console.error("Error executing MySQL query:", err);
@@ -73,7 +86,7 @@ app.put("/updatenote", upload.none(), async (req, res) => {
     }
 
     const query = "UPDATE tbl_notes SET note_title = ?, note_desc = ?, updated_at = NOW() WHERE nid = ?";
-    
+
     try {
         connection.query(query, [title, desc, nid], (err, results) => {
             if (err) throw err;
@@ -92,7 +105,7 @@ app.delete("/deletenote/:nid", async (req, res) => {
     const { nid } = req.params;
 
     const query = "DELETE FROM tbl_notes WHERE nid = ?";
-    
+
     try {
         connection.query(query, [nid], (err, results) => {
             if (err) throw err;
@@ -109,7 +122,7 @@ app.delete("/deletenote/:nid", async (req, res) => {
 
 app.get("/totalnotes", async (req, res) => {
     const query = "SELECT COUNT(*) AS total FROM tbl_notes";
-    
+
     try {
         connection.query(query, (err, results) => {
             if (err) throw err;
@@ -123,7 +136,7 @@ app.get("/totalnotes", async (req, res) => {
 
 app.get("/latestnotes", async (req, res) => {
     const query = "SELECT * FROM tbl_notes ORDER BY created_at DESC LIMIT 5";
-    
+
     try {
         connection.query(query, (err, results) => {
             if (err) throw err;
