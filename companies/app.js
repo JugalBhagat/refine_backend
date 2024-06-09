@@ -69,6 +69,21 @@ app.post("/add", async (req, res) => {
     }
 });
 
+// API to fetch all company information
+app.get('/allcompanies', (req, res) => {
+    const query = 'SELECT * FROM tbl_company';
+    connection.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing MySQL query:', err);
+        return res.status(500).json({ message: 'Internal server error' });
+      }
+      if (results.length === 0) {
+        return res.status(404).json({ message: 'No companies found' });
+      }
+      res.status(200).json({ message: 'All data fetched', data: results });
+    });
+});
+
 // Get country wise companies
 app.get("/fetchcountry", (req, res) => {
 
@@ -95,6 +110,7 @@ app.get("/fetchcountry", (req, res) => {
     });
 });
 
+//GET total companies
 app.get("/totcompany", (req, res) => {
 
     const query = `SELECT count(*) AS total from tbl_company`;
