@@ -1,0 +1,20 @@
+{
+  "name": "companies",
+  "version": "1.0.0",
+  "description": "",
+  "main": "yes",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
+    "express-fileupload": "^1.5.0",
+    "mysql": "^2.18.1",
+    "mysqli": "^3.1.4",
+    "nodemon": "^3.1.3"
+  }
+}
