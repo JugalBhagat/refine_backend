@@ -84,6 +84,25 @@ app.get('/allcompanies', (req, res) => {
     });
 });
 
+// DELETE API to delete a company
+app.delete('/delcompany/:id', (req, res) => {
+    const companyId = req.params.id;
+    const query = 'DELETE FROM tbl_company WHERE cid = ?';
+    
+    connection.query(query, [companyId], (err, results) => {
+        if (err) {
+            console.error('Error executing MySQL query:', err);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+        
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ message: 'Company not found or already deleted' });
+        }
+        
+        res.status(200).json({ message: 'Company deleted successfully' });
+    });
+});
+
 // Get country wise companies
 app.get("/fetchcountry", (req, res) => {
 

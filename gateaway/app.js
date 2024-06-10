@@ -69,7 +69,7 @@ app.get("/fetchcountry", async (req, res) => {
         connection.query(query, (err, results) => {
             if (err) throw err;
             const countries = results.map(row => row.country_name);
-            res.status(200).json({ message: "Fetched All Company", "countries": countries });
+            res.status(200).json({ message: "Fetched All Countries", "countries": countries });
         });
     } catch (err) {
         console.error("Error executing MySQL query:", err);
