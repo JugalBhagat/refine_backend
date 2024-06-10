@@ -205,21 +205,56 @@ app.put("/updateuser",verifyToken, (req, res) => {
 });
 
 // Fetch all User Data method
-app.get("/fetchall",verifyToken, (req, res) => {
+app.get("/fetchall", verifyToken, (req, res) => {
+    const query = `
+        SELECT u.*, c.cname
+        FROM tbl_users u
+        LEFT JOIN tbl_company c ON u.cid = c.cid
+    `;
 
-    // Find user by username and password
-    connection.query("SELECT * FROM tbl_users",(err, results) => {
+    connection.query(query, (err, results) => {
         if (err) {
             console.error("Error executing MySQL query:", err);
             return res.status(500).json({ message: "Internal server error" });
         }
 
         if (results.length === 0) {
-            return res.status(401).json({ message: "Invalid username or password" });
+            return res.status(401).json({ message: "Data is Empty" });
         }
-        res.status(200).json({ message: "Fetch All Data successful",data : results , total_result: results.length });
+
+        res.status(200).json({ message: "Fetch All Data successful", total_result: results.length, data: results});
     });
 });
+
+// Fetch user registration statistics by month
+app.get('/monstats', verifyToken, (req, res) => {
+    const sql = `
+        SELECT
+            COUNT(*) AS count,
+            DATE_FORMAT(created_at, '%b') AS month
+        FROM
+            tbl_users
+        GROUP BY
+            DATE_FORMAT(created_at, '%b')
+        ORDER BY
+            MIN(created_at)
+    `;
+    connection.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error executing MySQL query:', err);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+        const userCounts = Array.from({ length: 12 }, () => 0);
+        results.forEach(item => {
+            const monthIndex = new Date(item.month + ' 1, 2000').getMonth();
+            userCounts[monthIndex] = item.count;
+        });
+
+        // Return the results
+        res.status(200).json(userCounts);
+    });
+});
+
 
 app.use("/", (req, res) => {
     res.status(200).json({ "msg": "Hello From users" });
