@@ -26,7 +26,6 @@ app.use(fileUpload());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Add Company method
 app.post("/add", async (req, res) => {
     const { cname, type, size, country, revenue } = req.body;
 
@@ -69,7 +68,6 @@ app.post("/add", async (req, res) => {
     }
 });
 
-// API to fetch all company information
 app.get('/allcompanies', (req, res) => {
     const query = 'SELECT * FROM tbl_company';
     connection.query(query, (err, results) => {
@@ -84,7 +82,6 @@ app.get('/allcompanies', (req, res) => {
     });
 });
 
-// DELETE API to delete a company
 app.delete('/delcompany/:id', (req, res) => {
     const companyId = req.params.id;
     const query = 'DELETE FROM tbl_company WHERE cid = ?';
@@ -103,7 +100,6 @@ app.delete('/delcompany/:id', (req, res) => {
     });
 });
 
-// Get country wise companies
 app.get("/fetchcountry", (req, res) => {
 
     const query = `SELECT
@@ -129,7 +125,6 @@ app.get("/fetchcountry", (req, res) => {
     });
 });
 
-//GET total companies
 app.get("/totcompany", (req, res) => {
 
     const query = `SELECT count(*) AS total from tbl_company`;

@@ -1,13 +1,16 @@
+// const 
 const express = require("express");
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const mysql = require("mysql");
+const dotenv = require("dotenv");
+
+dotenv.config()
 
 const app = express();
 const PORT = 8000;
-const SECRET_KEY = "jugal2511bhagat";
-
+const SECRET_KEY = process.env.SECRET_KEY;
 app.use(cors());
 app.use(express.json());
 
@@ -42,7 +45,6 @@ function verifyToken(req, res, next) {
     });
 }
 
-// Create proxy middleware without altering the body
 const commonProxyOptions = (target) => ({
     target,
     changeOrigin: true,
@@ -90,11 +92,9 @@ app.get("/fetchcompany", async (req, res) => {
     }
 });
 
-
 app.use("/", (req, res) => {
     res.status(200).json({ "msg": "Hello From Gateaway" });
 });
-
 
 app.listen(PORT, () => {
     console.log("Gateway listening to port http://localhost:" + PORT);

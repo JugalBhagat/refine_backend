@@ -1,12 +1,17 @@
+
 const express = require("express");
 const mysql = require("mysql");
 const jwt = require("jsonwebtoken");
 const fileUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
 
 const app = express();
 const PORT = 8002;
-const SECRET_KEY = "jugal2511bhagat"; 
+dotenv.config();
+// const SECRET_KEY = "jugal2511bhagat"; 
+const SECRET_KEY = process.env.SECRET_KEY;
+
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -44,7 +49,6 @@ function verifyToken(req, res, next) {
     });
 }
 
-// Signup method
 app.post("/signup", async (req, res) => {
     const { username, email, password, cid, role } = req.body;
     console.log(username + "," + email + "," + role);
@@ -106,7 +110,6 @@ app.post("/signup", async (req, res) => {
     }
 });
 
-// Login method
 app.post("/login", (req, res) => {
     const { email, password } = req.body;
 
@@ -143,7 +146,6 @@ app.post("/login", (req, res) => {
     });
 });
 
-// Fetch single user
 app.get("/fetchuser/:user_id", verifyToken, (req, res) => {
     const { user_id } = req.params;
 
@@ -180,7 +182,6 @@ app.get("/fetchuser/:user_id", verifyToken, (req, res) => {
     });
 });
 
-// Update method
 app.put("/updateuser",verifyToken, (req, res) => {
     const { user_id, username, role, email } = req.body;
 
@@ -204,7 +205,6 @@ app.put("/updateuser",verifyToken, (req, res) => {
     });
 });
 
-// Fetch all User Data method
 app.get("/fetchall", verifyToken, (req, res) => {
     const query = `
         SELECT u.*, c.cname
@@ -226,7 +226,6 @@ app.get("/fetchall", verifyToken, (req, res) => {
     });
 });
 
-// Fetch user registration statistics by month
 app.get('/monstats', verifyToken, (req, res) => {
     const sql = `
         SELECT
@@ -254,7 +253,6 @@ app.get('/monstats', verifyToken, (req, res) => {
         res.status(200).json(userCounts);
     });
 });
-
 
 app.use("/", (req, res) => {
     res.status(200).json({ "msg": "Hello From users" });
